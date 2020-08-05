@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  mysqldb:
+    container_name: mysqldb
+    image: mysql:5.7
+    restart: always
+    networks:
+      - hub-network
+    ports:
+      - '3307:3306'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=xpto
+
+networks:
+  hub-network:
