@@ -12,19 +12,36 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class User extends Model
 {
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'user';
+
+    /**
      * Get the user that owns the wallet.
      *
      * @return HasOne
      */
     public function wallet()
     {
-        return $this->hasOne(Wallet::class);
+        return $this->hasOne(Wallet::class, 'user_id');
     }
 
     /**
-     * The table associated with the model.
-     *
-     * @var string
+     * @return bool
      */
-    protected $table = 'user';
+    public function isNotAbleToSendValue()
+    {
+        return $this->document_type == 'CNPJ';
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function hasNoBalance($value)
+    {
+        return $this->wallet->balanceLessThan($value);
+    }
 }

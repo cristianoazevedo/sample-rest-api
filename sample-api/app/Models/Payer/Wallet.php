@@ -12,7 +12,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Wallet extends Model
 {
     /**
-     * Get the user record associated with the user.
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'wallet';
+
+    /**
+     * Get the user record associated with the wallet.
      *
      * @return BelongsTo
      */
@@ -22,9 +29,12 @@ class Wallet extends Model
     }
 
     /**
-     * The table associated with the model.
-     *
-     * @var string
+     * @param float $value
+     * @return bool
      */
-    protected $table = 'wallet';
+    public function balanceLessThan(float $value)
+    {
+        return floatval($this->balance) < $value;
+    }
+
 }

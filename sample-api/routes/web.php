@@ -1,6 +1,6 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
+/** @var Router $router */
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +13,19 @@
 |
 */
 
+use Laravel\Lumen\Routing\Router;
+
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+    return ['name' => config('app.name'), 'version' => '1.0.0'];
+});
+
+$router->group(['prefix' => 'api/v1'], function () use ($router) {
+    $router->post('/transaction', 'TransactionController@create');
+});
+
+$router->group(['prefix' => 'api/v1'], function () use ($router) {
+    $router->get('/users', 'UserController@index');
+    $router->get('/user/{id}', 'UserController@find');
+    $router->post('/user', 'UserController@create');
+    $router->put('/user/{id}', 'UserController@update');
 });

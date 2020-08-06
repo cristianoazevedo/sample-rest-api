@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\TransactionSaved;
+use App\Listeners\UpdateBalancePayee;
+use App\Listeners\UpdateBalancePayer;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -12,8 +15,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        \App\Events\ExampleEvent::class => [
-            \App\Listeners\ExampleListener::class,
+        TransactionSaved::class => [
+            UpdateBalancePayer::class,
+            UpdateBalancePayee::class,
         ],
     ];
 }

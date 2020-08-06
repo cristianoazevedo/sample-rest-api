@@ -1,12 +1,11 @@
 <?php
 
-/** @var Factory $factory */
-
 use App\Models\Payer\User;
 use App\Models\Payer\Wallet;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 
+/** @var Factory $factory */
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -21,8 +20,9 @@ use Illuminate\Database\Eloquent\Factory;
 $factory->define(User::class, function (Faker $faker) {
     $document = mt_rand(str_pad(9, 10, '9', STR_PAD_RIGHT), str_pad(9, 11, '9', STR_PAD_RIGHT));
     $documentType = 'CPF';
+    $changeDocument = mt_rand(1, 2) % 2 == 0;
 
-    if (mt_rand(1, 2) % 2 == 0) {
+    if ($changeDocument) {
         $document = mt_rand(str_pad(9, 13, '9', STR_PAD_RIGHT), str_pad(9, 14, '9', STR_PAD_RIGHT));
         $documentType = 'CNPJ';
     }
@@ -38,6 +38,6 @@ $factory->define(User::class, function (Faker $faker) {
 
 $factory->define(Wallet::class, function (Faker $faker) {
     return [
-        'amount' => mt_rand(1000, 10000) / 100,
+        'balance' => mt_rand(1000, 10000) / 100,
     ];
 });
