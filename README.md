@@ -121,6 +121,6 @@ Response:  Status: 201 Created
 ```json
 {
     "id": 1,
-    "created_at": "2020-08-08T21:28:33+0000"
+    "created_at": "2020-08-08 20:35:51"
 }
 ```
