@@ -57,7 +57,7 @@ class TransactionController extends Controller
 
         return response()->json([
             'id' => $transaction->id,
-            'created_at' => (new \DateTime($transaction->created_at))->format(\DateTime::ISO8601)
+            'created_at' => $transaction->formatted_creation_date
         ],
             Response::HTTP_CREATED);
     }

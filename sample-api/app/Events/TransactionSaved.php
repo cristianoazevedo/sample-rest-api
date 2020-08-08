@@ -13,7 +13,7 @@ class TransactionSaved extends Event
     /**
      * @var Transactions
      */
-    public $transaction;
+    public Transactions $transaction;
 
     /**
      * TransactionSaved constructor.

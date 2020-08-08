@@ -35,4 +35,9 @@ class Transactions extends Model
     {
         return $this->hasOne(CashOut::class, 'transaction_id');
     }
+
+    public function getFormattedCreationDateAttribute()
+    {
+        return (new \DateTime($this->created_at))->format('Y-m-d H:i:s');
+    }
 }

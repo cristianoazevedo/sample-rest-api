@@ -9,6 +9,7 @@ use App\Exceptions\PaymentRejectedException;
 use App\Exceptions\TransactionException;
 use App\Exceptions\UserNotFoundException;
 use App\Models\Payer\User;
+use App\Models\Transaction\Transactions;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
 
@@ -55,7 +56,7 @@ class TransactionService
      * @throws TransactionException
      * @throws UserNotFoundException
      */
-    public function create(int $payerId, int $payeeId, float $value)
+    public function create(int $payerId, int $payeeId, float $value): Transactions
     {
         /* @var User $payer */
         $payer = $this->userRepository->find($payerId);
@@ -89,7 +90,7 @@ class TransactionService
      * @param float $value
      * @return mixed
      */
-    private function save(User $payer, User $payee, float $value)
+    private function save(User $payer, User $payee, float $value): Transactions
     {
         return $this->transactionRepository->save($payer, $payee, $value);
     }

@@ -5,7 +5,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    image: php-localy:1.0.0
+    image: php-localy:7.4
     container_name: sample-api
     restart: unless-stopped
     working_dir: /app
@@ -13,6 +13,7 @@ services:
     ports:
       - 8000:8000
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./sample-api:/app
     depends_on:
       - mysqldb
@@ -24,6 +25,7 @@ services:
     ports:
       - 3306:3306
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./mysql/my.cnf:/etc/mysql/my.cnf
     environment:
       - MYSQL_ROOT_PASSWORD=secret

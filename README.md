@@ -1,11 +1,27 @@
 # Project Sample Rest API
 ****Depedências do projeto:****
 - Docker e Docker Compose
-### Comandos:
-- **Gerando uma imagem local do PHP:**
+## Configurando o projeto:
 ```shell
-make build-image-php
+make install
 ```
+Esse comando irá deixar o ambiente pronto para o projeto.
+
+Após a intalação e configuração a aplicação poderá ser acessada http://localhost:8000
+
+**Para deixar uma url mais amigável edite o arquivo /etc/hosts e adicione:**
+```shell
+127.0.0.1   dev.sample-api.com
+```
+Conexão com o bando de dados:
+```
+  HOST=127.0.0.1
+  PORT=3306
+  DATABASE=xpto
+  USERNAME=root
+  PASSWORD=secret
+```
+### Comandos:
 - **Baixando as dependências do projeto:**
 ```shell
 make update
@@ -14,8 +30,6 @@ make update
 ```shell
 make migrate
 ```
-OBS: não é necessário rodar os comandos acima, pois será executado na configuração.
-
 - **Iniciando o servidor:**
 ```shell
 make serve
@@ -28,7 +42,7 @@ make serve PORT=8880
 ```shell
 make test
 ```
-- **Habilitando o consimidor da fila:**
+- **Habilitando o consumidor da fila:**
 ```shell
 make queue-work
 ```
@@ -49,24 +63,6 @@ make stack-stop
 make stack-restart
 ```
 
-## Configurando o projeto:
-```shell
-make install
-```
-Esse comando irá deixar o ambiente pronto para o projeto.
-
-**Para deixar uma url mais amigável edite o arquivo /etc/hosts e adicione:**
-```shell
-127.0.0.1   dev.sample-api.com
-```
-Conexão com o bando de dados:
-```
-  HOST=127.0.0.1
-  PORT=3306
-  DATABASE=xpto
-  USERNAME=root
-  PASSWORD=secret
-```
 # Utilizando da API
 O endpoint de conexão : http://dev.sample-api.com:8000/api/v1
 

@@ -4,10 +4,7 @@ DOCKER_EXEC=docker exec -it ${CONTAINER_NAME}
 
 .PHONY: install
 
-install: update migrate serve
-
-build-image-php:
-	- docker build --network=host -t php-localy:1.0.0 .
+install: build update migrate serve
 
 update: stack-up
 	- ${DOCKER_EXEC} composer update
@@ -37,3 +34,6 @@ stack-restart:
 
 stack-stop:
 	- docker-compose stop
+
+build:
+	- docker-compose up -d --build -V
