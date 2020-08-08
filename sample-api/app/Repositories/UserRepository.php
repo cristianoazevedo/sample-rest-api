@@ -7,12 +7,16 @@ use App\Models\Payer\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * Class UserRepository
+ * @package App\Repositories
+ */
 class UserRepository
 {
     /**
      * @var User
      */
-    private $model;
+    private User $model;
 
     /**
      * UserRepository constructor.
@@ -24,23 +28,24 @@ class UserRepository
     }
 
     /**
-     * @param string[] $columns
-     * @return User[]|Collection
+     * @param array|string[] $columns
+     * @return Collection
      */
-    public function all(array $columns = ['*'])
+    public function all(array $columns = ['*']): Collection
     {
         return $this->model::all($columns);
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param int $id
+     * @param array|string[] $columns
+     * @return User|null
      * @throws UserNotFoundException
      */
-    public function find(int $id)
+    public function find(int $id, array $columns = ['*']): ?User
     {
         try {
-            return $this->model::findOrFail($id);
+            return $this->model::findOrFail($id, $columns);
         } catch (ModelNotFoundException $exception) {
             throw new UserNotFoundException();
         }

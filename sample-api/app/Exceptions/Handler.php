@@ -12,6 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
+/**
+ * Class Handler
+ * @package App\Exceptions
+ */
 class Handler extends ExceptionHandler
 {
     /**
@@ -29,7 +33,7 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
+     * This is a great spot to cashIn exceptions to Sentry, Bugsnag, etc.
      *
      * @param \Throwable $exception
      * @return void
@@ -51,6 +55,10 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof ApplicationException) {
             return response()->json(['message' => $exception->getMessage()], $exception->getCode());
+        }
+
+        if ($exception instanceof ValidationException) {
+            return $exception->getResponse();
         }
 
         $debug = config('app.debug');

@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Transactions;
+use App\Models\Transaction\Transactions;
 
 /**
  * Class TransactionSaved

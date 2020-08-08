@@ -3,7 +3,9 @@
 namespace App\Repositories;
 
 use App\Models\Payer\User;
-use App\Models\Transactions;
+use App\Models\Transaction\CashOut;
+use App\Models\Transaction\CashIn;
+use App\Models\Transaction\Transactions;
 
 /**
  * Class TransactionRepository
@@ -12,15 +14,14 @@ use App\Models\Transactions;
 class TransactionRepository
 {
     /**
-     * @va string
-     */
-    const PENDING = 'pending';
-
-    /**
      * @var Transactions
      */
-    private $model;
+    private Transactions $model;
 
+    /**
+     * TransactionRepository constructor.
+     * @param Transactions $model
+     */
     public function __construct(Transactions $model)
     {
         $this->model = $model;
@@ -30,20 +31,43 @@ class TransactionRepository
      * @param User $payer
      * @param User $payee
      * @param float $value
-     * @return mixed
+     * @return Transactions
      */
-    public function save(User $payer, User $payee, float $value)
+    public function save(User $payer, User $payee, float $value): Transactions
     {
-        $transaction = new $this->model();
+        $this->model->value = $value;
 
-        $transaction->payer_user = $payer->id;
-        $transaction->payee_user = $payee->id;
-        $transaction->value = $value;
-        $transaction->status = self::PENDING;
-        $transaction->notified = self::PENDING;
+        $this->model->save();
 
-        $transaction->save();
+        $cashOut = $this->makeCashOut();
+        $cashOut->user()->associate($payer);
 
-        return $transaction;
+        $cashIn = $this->makeCashIn();
+        $cashIn->user()->associate($payee);
+
+        $this->model->cashIn()->save($cashIn);
+        $this->model->cashOut()->save($cashOut);
+
+        return $this->model;
+    }
+
+    /**
+     * @return CashIn
+     */
+    private function makeCashIn(): CashIn
+    {
+        $cashIn = new CashIn();
+        $cashIn->make();
+        return $cashIn;
+    }
+
+    /**
+     * @return CashOut
+     */
+    private function makeCashOut(): CashOut
+    {
+        $cashOut = new CashOut();
+        $cashOut->make();
+        return $cashOut;
     }
 }

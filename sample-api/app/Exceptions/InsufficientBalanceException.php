@@ -4,13 +4,17 @@ namespace App\Exceptions;
 
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class InsufficientBalanceException
+ * @package App\Exceptions
+ */
 class InsufficientBalanceException extends TransactionException
 {
     /**
-     * UserNotFoundException constructor.
+     * InsufficientBalanceException constructor.
      */
     public function __construct()
     {
-        parent::__construct('payer with insufficient balance', Response::HTTP_NOT_FOUND);
+        parent::__construct('INSUFFICIENT_BALANCE', Response::HTTP_NOT_FOUND);
     }
 }

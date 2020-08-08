@@ -3,7 +3,6 @@
 namespace App\Models\Payer;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Wallet
@@ -19,22 +18,34 @@ class Wallet extends Model
     protected $table = 'wallet';
 
     /**
-     * Get the user record associated with the wallet.
+     * The attributes that should be cast.
      *
-     * @return BelongsTo
+     * @var array
      */
-    public function user()
+    protected $casts = [
+        'balance' => 'float',
+    ];
+
+    /**
+     * @param float $value
+     */
+    public function add(float $value): void
     {
-        return $this->belongsTo(User::class);
+        $this->balance += $value;
+    }
+
+    public function subtract(float $value): void
+    {
+        $this->balance -= $value;
     }
 
     /**
      * @param float $value
      * @return bool
      */
-    public function balanceLessThan(float $value)
+    public function balanceLessThan(float $value): bool
     {
-        return floatval($this->balance) < $value;
+        return $this->balance < $value;
     }
 
 }

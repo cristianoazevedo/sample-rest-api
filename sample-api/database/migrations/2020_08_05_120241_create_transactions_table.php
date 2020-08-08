@@ -18,11 +18,7 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('payer_user')->constrained('user');
-            $table->foreignId('payee_user')->constrained('user');
             $table->double('value', 10, 2);
-            $table->enum('status', ['PENDING', 'FINISHED']);
-            $table->enum('notified', ['PENDING', 'FINISHED']);
             $table->timestamps();
         });
     }

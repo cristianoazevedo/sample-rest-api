@@ -2,34 +2,49 @@
 
 namespace App\Services;
 
+use App\Events\TransactionSaved;
 use App\Exceptions\InsufficientBalanceException;
-use App\Exceptions\NotAbleToSandValueException;
+use App\Exceptions\NotAbleToSendValueException;
+use App\Exceptions\PaymentRejectedException;
 use App\Exceptions\TransactionException;
 use App\Exceptions\UserNotFoundException;
 use App\Models\Payer\User;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
 
+/**
+ * Class TransactionService
+ * @package App\Services
+ */
 class TransactionService
 {
     /**
      * @var TransactionRepository
      */
-    private $transactionRepository;
+    private TransactionRepository $transactionRepository;
     /**
      * @var UserRepository
      */
-    private $userRepository;
+    private UserRepository $userRepository;
+    /**
+     * @var PaymentProcessAuthorization
+     */
+    private PaymentProcessAuthorization $paymentProcessAuthorization;
 
     /**
      * TransactionService constructor.
      * @param TransactionRepository $transactionRepository
      * @param UserRepository $userRepository
+     * @param PaymentProcessAuthorization $paymentProcessAuthorization
      */
-    public function __construct(TransactionRepository $transactionRepository, UserRepository $userRepository)
-    {
+    public function __construct(
+        TransactionRepository $transactionRepository,
+        UserRepository $userRepository,
+        PaymentProcessAuthorization $paymentProcessAuthorization
+    ) {
         $this->transactionRepository = $transactionRepository;
         $this->userRepository = $userRepository;
+        $this->paymentProcessAuthorization = $paymentProcessAuthorization;
     }
 
     /**
@@ -42,24 +57,30 @@ class TransactionService
      */
     public function create(int $payerId, int $payeeId, float $value)
     {
-        try {
-            /* @var User $payer */
-            $payer = $this->userRepository->find($payerId);
-            /* @var User $payee */
-            $payee = $this->userRepository->find($payeeId);
+        /* @var User $payer */
+        $payer = $this->userRepository->find($payerId);
+        /* @var User $payee */
+        $payee = $this->userRepository->find($payeeId);
 
-            if ($payer->isNotAbleToSendValue()) {
-                throw new NotAbleToSandValueException();
-            }
+        $this->paymentProcessAuthorization->process();
 
-            if ($payer->hasNoBalance($value)) {
-                throw new InsufficientBalanceException();
-            }
-
-            return $this->save($payer, $payee, $value);
-        } catch (NotAbleToSandValueException | InsufficientBalanceException $exception) {
-            throw new TransactionException($exception->getMessage(), $exception->getCode(), $exception);
+        if ($this->paymentProcessAuthorization->isRejected()) {
+            throw new PaymentRejectedException($this->paymentProcessAuthorization->reason());
         }
+
+        if ($payer->isNotAbleToSendValue()) {
+            throw new NotAbleToSendValueException();
+        }
+
+        if ($payer->isOutOfBalance($value)) {
+            throw new InsufficientBalanceException();
+        }
+
+        $transaction = $this->save($payer, $payee, $value);
+
+        event(new TransactionSaved($transaction));
+
+        return $transaction;
     }
 
     /**

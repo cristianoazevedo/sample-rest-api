@@ -13,7 +13,10 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class UserService
 {
-    private $repository;
+    /**
+     * @var UserRepository
+     */
+    private UserRepository $repository;
 
     /**
      * UserService constructor.
@@ -25,20 +28,20 @@ class UserService
     }
 
     /**
-     * @return User[]|Collection
+     * @return Collection
      */
-    public function getAll()
+    public function getAll(): Collection
     {
         return $this->repository->all(['id', 'name']);
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param int $id
+     * @return User|null
      * @throws UserNotFoundException
      */
-    public function find(int $id)
+    public function find(int $id): ?User
     {
-        return $this->repository->find($id);
+        return $this->repository->find($id, ['id', 'name']);
     }
 }

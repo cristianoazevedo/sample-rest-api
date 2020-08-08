@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\TransactionException;
+use App\Exceptions\UserNotFoundException;
 use App\Services\TransactionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,9 +20,12 @@ class TransactionController extends Controller
     /**
      * @var TransactionService
      */
-    protected $service;
+    protected TransactionService $service;
 
-
+    /**
+     * TransactionController constructor.
+     * @param TransactionService $service
+     */
     public function __construct(TransactionService $service)
     {
         $this->service = $service;
@@ -30,13 +35,18 @@ class TransactionController extends Controller
      * @param Request $request
      * @return JsonResponse
      * @throws ValidationException
+     * @throws TransactionException
+     * @throws UserNotFoundException
      */
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
+        /**
+         * @todo tirar essa validação do controller
+         */
         $this->validate($request, [
             'payer' => 'required',
-            'payee' => 'required',
-            'value' => 'required'
+            'payee' => 'required|different:payer',
+            'value' => 'required|numeric|min:1'
         ]);
 
         $payerId = $request->json()->get('payer');

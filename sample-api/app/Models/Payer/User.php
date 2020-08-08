@@ -19,11 +19,9 @@ class User extends Model
     protected $table = 'user';
 
     /**
-     * Get the user that owns the wallet.
-     *
      * @return HasOne
      */
-    public function wallet()
+    public function wallet(): HasOne
     {
         return $this->hasOne(Wallet::class, 'user_id');
     }
@@ -31,7 +29,7 @@ class User extends Model
     /**
      * @return bool
      */
-    public function isNotAbleToSendValue()
+    public function isNotAbleToSendValue(): bool
     {
         return $this->document_type == 'CNPJ';
     }
@@ -40,7 +38,7 @@ class User extends Model
      * @param $value
      * @return mixed
      */
-    public function hasNoBalance($value)
+    public function isOutOfBalance($value): bool
     {
         return $this->wallet->balanceLessThan($value);
     }

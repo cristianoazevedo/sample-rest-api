@@ -21,7 +21,7 @@ class CreateUserTable extends Migration
             $table->string('name', 255);
             $table->string('email', 255);
             $table->string('password', 32);
-            $table->bigInteger('document');
+            $table->string('document', 14);
             $table->enum('document_type', ['CPF', 'CNPJ']);
             $table->timestamps();
         });
