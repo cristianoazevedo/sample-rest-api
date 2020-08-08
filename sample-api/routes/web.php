@@ -19,13 +19,17 @@ $router->get('/', function () use ($router) {
     return ['name' => config('app.name'), 'version' => '1.0.0'];
 });
 
-$router->group(['prefix' => 'api/v1'], function () use ($router) {
-    $router->post('/transaction', 'TransactionController@create');
-});
 
 $router->group(['prefix' => 'api/v1'], function () use ($router) {
+    /**
+     * User rotes
+     */
     $router->get('/users', 'UserController@index');
     $router->get('/user/{id}', 'UserController@find');
     $router->post('/user', 'UserController@create');
     $router->put('/user/{id}', 'UserController@update');
+    /**
+     * Transactions rotes
+     */
+    $router->post('/transaction', 'TransactionController@create');
 });
